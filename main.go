@@ -9,6 +9,8 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 	"time"
@@ -161,20 +163,37 @@ CREATE:
 	return nil
 }
 
+func toAbsPath(ref_path string) (string, error) {
+	exe_path, err := os.Executable()
+	if err != nil {
+		return exe_path, err
+	}
+	conf_path := filepath.Join(filepath.Dir(exe_path), ref_path)
+	return conf_path, nil
+}
 func main() {
-	p, err := readParam("./conf.yaml")
+
+	conf_path, err := toAbsPath("conf.yaml")
 	if err != nil {
 		log.Fatalln(err)
 	}
 
+	p, err := readParam(conf_path)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	DbPath, err := toAbsPath(p.DbPath)
+	if err != nil {
+		log.Fatalln(err)
+	}
 	var isInit = flag.Bool("init", false, "bool flag")
 	flag.Parse()
 	if *isInit {
 		fmt.Println("init Problem DB...")
-		err = initProbDb(p.ProblemReqUrl, p.DbPath)
+		err = initProbDb(p.ProblemReqUrl, DbPath)
 	}
 	//connect to db
-	DbConnection, _ := sql.Open("sqlite3", p.DbPath)
+	DbConnection, _ := sql.Open("sqlite3", DbPath)
 	defer DbConnection.Close()
 	// create submit table
 	cmd := `CREATE TABLE IF NOT EXISTS Submit(
