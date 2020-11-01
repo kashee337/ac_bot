@@ -1,4 +1,5 @@
-base_url: 
-user_name: 
+submit_req_url: https://kenkoooo.com/atcoder/atcoder-api/results?user=
+problem_req_url: https://kenkoooo.com/atcoder/resources/contest-problem.json
+user_id: []
 webhook_url: 
-db_path:  ./test.db
+db_path: ac.db
