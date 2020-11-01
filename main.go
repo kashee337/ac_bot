@@ -115,6 +115,7 @@ func dBConnect(db_path string) *gorm.DB {
 	}
 	return DbConnection
 }
+
 func initProblemDb(db_path string) {
 	DbConnection := dBConnect(db_path)
 	defer DbConnection.Close()
@@ -156,9 +157,12 @@ func updateSubmitDb(req_url string, db_path string) {
 		log.Fatal(err)
 	}
 	for _, submit := range submit_list {
-		DbConnection.Create(&submit)
+		if submit.Result == "AC" {
+			DbConnection.Create(&submit)
+		}
 	}
 }
+
 func getNewSubmitDb(user_id string, db_path string) []Results {
 	DbConnection := dBConnect(db_path)
 	defer DbConnection.Close()
@@ -174,6 +178,7 @@ func getNewSubmitDb(user_id string, db_path string) []Results {
 
 	return new_submits
 }
+
 func getLastSubmit(user_id string, db_path string) Results {
 	DbConnection := dBConnect(db_path)
 	defer DbConnection.Close()
