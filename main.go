@@ -109,8 +109,7 @@ func readConf(yaml_path string) (Conf, error) {
 }
 
 func dBConnect(db_path string) *gorm.DB {
-	db_ms := DBMS
-	DbConnection, err := gorm.Open(db_ms, db_path)
+	DbConnection, err := gorm.Open(DBMS, db_path)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -224,7 +223,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	conf.DbPath = "test.db"
+
 	DbPath, err := toAbsPath(conf.DbPath)
 	if err != nil {
 		log.Fatalln(err)
@@ -233,6 +232,7 @@ func main() {
 	//init db
 	initSubmitDb(DbPath)
 	initProblemDb(DbPath)
+
 	//update problem tables
 	updateProblemDb(conf.ProblemReqUrl, DbPath)
 
