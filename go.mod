@@ -1,4 +1,4 @@
-module ac_bot
+module github.com/kashee337/ac_bot
 
 go 1.15
 
