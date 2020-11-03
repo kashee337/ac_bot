@@ -14,7 +14,7 @@ type Conf struct {
 	DbPath        string   `yaml:"db_path"`
 }
 
-func readConf(yaml_path string) (Conf, error) {
+func ReadConf(yaml_path string) (Conf, error) {
 	buf, err := ioutil.ReadFile(yaml_path)
 	p := Conf{}
 	if err != nil {
