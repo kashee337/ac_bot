@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ac_bot/model"
 	"github.com/jinzhu/gorm"
+	"github.com/kashee337/ac_bot/model"
 )
 
 const (
@@ -90,7 +90,7 @@ func UpdateProblemDb(req_url string, db_path string) {
 	DbConnection := DBConnect(db_path)
 	defer DbConnection.Close()
 
-	problem_list, err := getProblemInfo(req_url)
+	problem_list, err := GetProblemInfo(req_url)
 	if err != nil {
 		log.Fatal(err)
 	}
