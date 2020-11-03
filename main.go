@@ -1,23 +1,16 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/kashee337/ac_bot/config"
 	"github.com/kashee337/ac_bot/controller"
+	"github.com/kashee337/ac_bot/sender"
 	_ "github.com/mattn/go-sqlite3"
 )
-
-type payload struct {
-	Text string `json:"text"`
-}
 
 func toAbsPath(ref_path string) (string, error) {
 	exe_path, err := os.Executable()
@@ -26,20 +19,6 @@ func toAbsPath(ref_path string) (string, error) {
 	}
 	conf_path := filepath.Join(filepath.Dir(exe_path), ref_path)
 	return conf_path, nil
-}
-
-func makeNotifyData(new_submits []controller.Results, last_submit controller.Results) string {
-
-	user_id := last_submit.Submit.UserId
-	now := time.Now().Format("2006-01-02")
-	last := time.Unix(last_submit.Submit.EpochSecond, 0).Format("2006-01-02")
-
-	header := fmt.Sprintf("[%sさん]\nnow:%s last:%s\n新しく%d問解きました！\n", user_id, now, last, len(new_submits))
-	var body string = ""
-	for _, submit := range new_submits {
-		body += fmt.Sprintf("%s: %s\n", submit.Submit.ProblemId, submit.ProblemUrl)
-	}
-	return header + body
 }
 
 func main() {
@@ -72,23 +51,14 @@ func main() {
 		controller.UpdateSubmitDb(conf.SubmitReqUrl+user_id, DbPath)
 		new_submits := controller.GetNewSubmitDb(user_id, DbPath)
 		if len(new_submits) == 0 {
+			fmt.Println(user_id + ":skip")
 			continue
 		}
 		last_submit := controller.GetLastSubmit(user_id, DbPath)
-		notify_list = append(notify_list, makeNotifyData(new_submits, last_submit))
+		notify_list = append(notify_list, sender.MakeNotifyData(new_submits, last_submit))
 
 	}
 	//send to slack!
-	for _, notify_data := range notify_list {
-		data, err := json.Marshal(payload{Text: notify_data})
-		if err != nil {
-			log.Fatalln(err)
-		}
-		_, err = http.PostForm(conf.WebhookUrl, url.Values{"payload": {string(data)}})
-		if err != nil {
-			log.Fatalln(err)
-		}
-		fmt.Println(notify_data)
-	}
+	sender.NotifyAC(notify_list, conf.WebhookUrl)
 	fmt.Println("finish")
 }
