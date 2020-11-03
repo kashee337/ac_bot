@@ -9,7 +9,7 @@ import (
 type Conf struct {
 	SubmitReqUrl  string   `yaml:"submit_req_url"`
 	ProblemReqUrl string   `yaml:"problem_req_url"`
-	UserName      []string `yaml:"user_name"`
+	UserId        []string `yaml:"user_id"`
 	WebhookUrl    string   `yaml:"webhook_url"`
 	DbPath        string   `yaml:"db_path"`
 }
