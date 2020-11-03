@@ -39,7 +39,8 @@ func GetUserSubmit(req_url string) ([]model.Submit, error) {
 		return nil, err
 	}
 
-	time.Sleep(2)
+	time.Sleep(5)
+
 	return sub_list, nil
 }
 
@@ -64,7 +65,7 @@ func GetProblemInfo(req_url string) ([]model.Problem, error) {
 		problem_list[i].ProblemUrl = fmt.Sprintf("https://atcoder.jp/contests/%s/tasks/%s", problem.ContestId, problem.ProblemId)
 	}
 
-	time.Sleep(2)
+	time.Sleep(5)
 
 	return problem_list, nil
 }
