@@ -1,5 +1,6 @@
 module github.com/kashee337/ac_bot
 
+// +heroku goVersion go1.15
 go 1.15
 
 require (
