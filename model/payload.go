@@ -1,5 +1,5 @@
 package model
 
-type payload struct {
+type Payload struct {
 	Text string `json:"text"`
 }
