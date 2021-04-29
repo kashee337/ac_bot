@@ -97,7 +97,7 @@ func UpdateProblemDb(req_url string, db_path string) {
 	}
 
 	for _, problem := range problem_list {
-		DbConnection.Create(&problem)
+		DbConnection.Where(model.Problem{ProblemId:problem.ProblemId}).FirstOrCreate(&problem)
 	}
 }
 
@@ -120,7 +120,7 @@ func UpdateSubmitDb(req_url string, db_path string) {
 	}
 	for _, submit := range submit_list {
 		if submit.Result == "AC" {
-			DbConnection.Create(&submit)
+			DbConnection.Where(model.Submit{UserId:submit.UserId,ProblemId:submit.ProblemId}).FirstOrCreate(&submit)
 		}
 	}
 }
